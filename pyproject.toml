@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "CalculateHydrogenBonds"
+version = "2025.0"
+description = "Outputs the Number of Hydrogen bonds and donors available in the system."
+keywords = ["ovito", "python-modifier"]
+authors = [{name = "Radhakrishnan Anbarasan", email = "r.anbarasan1993@gmail.com"}]
+license = {text = "MIT License"}
+readme = "README.md"
+requires-python = ">=3.7"
+dependencies = [
+    "ovito >= 3.9.1", 
+    "numpy >= 1.22",
+]
+
+[project.urls]
+repository = "https://github.com/anbarasananbu/CalculateParticleTypeAngles.git"
+
+[project.entry-points.'OVITO.Modifier']
+"Calculate angles" = "CalculateParticleTypeAngles:CalculateParticleTypeAngles"
+
+[tool.setuptools.packages.find]
+where = ["src"]
