@@ -70,5 +70,5 @@ class CalculateParticleTypeAngles(ModifierInterface):
         # Store results in a table
         table = data.tables.create(identifier="angle-triplet", title="Bond Angles of Particle", plot_mode=DataTable.PlotMode.NoPlot)
         table.y = table.create_property("Angle", data=angles_list)
-        table.create_property("Particle", data=np.column_stack([donor_list, center_list, acceptor_list]), components=["A", "B", "C"])
+        table.x = table.create_property("Particle", data=np.column_stack([donor_list, center_list, acceptor_list]), components=["A", "B", "C"])
         data.attributes["No-angles"] = len(angles_list)
