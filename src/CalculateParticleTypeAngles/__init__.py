@@ -31,8 +31,8 @@ class CalculateParticleTypeAngles(ModifierInterface):
     def modify(self, data, **kwargs):
         """Identify hydrogen bonds based on distance and angle criteria."""
         # Initialize neighbor finders
-        donor_finder = CutoffNeighborFinder(self.HD_rcut, data)
-        acceptor_finder = CutoffNeighborFinder(self.HA_rcut, data)
+        donor_finder = CutoffNeighborFinder(cutoff=self.HD_rcut, data_collection=data)
+        acceptor_finder = CutoffNeighborFinder(cutoff=self.HA_rcut, data_collection=data)
 
         # Get hydrogen atom indices (type 6)
         ptypes = data.particles.particle_types
@@ -53,10 +53,10 @@ class CalculateParticleTypeAngles(ModifierInterface):
                 if A_neigh.distance > self.HD_rcut and ptypes[A_neigh.index] == self.accep_type:
                     vec_ha, acceptor_idx, dist_ha = A_neigh.delta, A_neigh.index, A_neigh.distance
                     
-                    angle = calculate_angle(vec_hd, vec_ha)
+                    angle = self.Calculate_angle(vec_hd, vec_ha)
                     dist_da = np.sqrt(dist_hd**2 + dist_ha**2 - 2 * dist_hd * dist_ha * np.cos(np.radians(angle)))
     
-                    if angle >= DHA_ANGLE_THRESHOLD and dist_da <= DA_CUTOFF:
+                    if angle >= self.DHA_acut and dist_da <= self.DA_rcut:
                         angles_list.append(angle)
                         donor_list.append(donor_idx)
                         center_list.append(H_idx)
