@@ -61,7 +61,12 @@ class CalculateParticleTypeAngles(ModifierInterface):
                         donor_list.append(donor_idx)
                         center_list.append(H_idx)
                         acceptor_list.append(acceptor_idx)
-    
+        # **Handle case where no angles are found**
+        if not angles_list:
+            data.attributes["No-angles"] = 0
+            return
+        
+        
         # Convert index to particle Identifier
         donor_list = np.array(data.particles.identifiers[donor_list])
         center_list = np.array(data.particles.identifiers[center_list])
@@ -69,6 +74,6 @@ class CalculateParticleTypeAngles(ModifierInterface):
 
         # Store results in a table
         table = data.tables.create(identifier="angle-triplet", title="Bond Angles of Particle", plot_mode=DataTable.PlotMode.NoPlot)
-        table.y = table.create_property("Angle", data=angles_list)
-        table.x = table.create_property("Particle", data=np.column_stack([donor_list, center_list, acceptor_list]), components=["A", "B", "C"])
+        table.x = table.create_property("Angle", data=angles_list)
+        table.y = table.create_property("Particle", data=np.column_stack([donor_list, center_list, acceptor_list]), components=["A", "B", "C"])
         data.attributes["No-angles"] = len(angles_list)
