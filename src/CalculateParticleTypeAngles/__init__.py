@@ -34,7 +34,7 @@ class CalculateParticleTypeAngles(ModifierInterface):
         donor_finder = CutoffNeighborFinder(cutoff=self.HD_rcut, data_collection=data)
         acceptor_finder = CutoffNeighborFinder(cutoff=self.HA_rcut, data_collection=data)
 
-        # Get hydrogen atom indices (type 6)
+        # Get hydrogen atom indices
         ptypes = data.particles.particle_types
         center_indices = np.where(ptypes == self.center_type)[0]
 
@@ -62,18 +62,23 @@ class CalculateParticleTypeAngles(ModifierInterface):
                         center_list.append(H_idx)
                         acceptor_list.append(acceptor_idx)
         # **Handle case where no angles are found**
+        
+        # **Handle case where no angles are found**
         if not angles_list:
+            table = data.tables.create(identifier="angle-triplet", title="Bond Angles of Particle", plot_mode=DataTable.PlotMode.NoPlot)
+            table.y = table.create_property("Angle", data=np.zeros(0))
+            table.x = table.create_property("Particle", data=np.zeros((0, 3)))  # Empty 2D array with shape (0,3)
             data.attributes["No-angles"] = 0
             return
         
         
-        # Convert index to particle Identifier
+        ### Convert index to particle Identifier
         donor_list = np.array(data.particles.identifiers[donor_list])
         center_list = np.array(data.particles.identifiers[center_list])
         acceptor_list = np.array(data.particles.identifiers[acceptor_list])
 
-        # Store results in a table
+        ### Store results in a table
         table = data.tables.create(identifier="angle-triplet", title="Bond Angles of Particle", plot_mode=DataTable.PlotMode.NoPlot)
         table.x = table.create_property("Angle", data=angles_list)
         table.y = table.create_property("Particle", data=np.column_stack([donor_list, center_list, acceptor_list]), components=["A", "B", "C"])
-        data.attributes["No-angles"] = len(angles_list)
+        data.attributes["No-angles"] = len(angles_list)        
